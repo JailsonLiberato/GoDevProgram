@@ -2,38 +2,49 @@
 //  ViewController.swift
 //  Aula 07
 //
-//  Created by Jailson Liberato on 15/03/22.
+//  Created by Jailson Liberato on 17/03/22.
 //
 
 import UIKit
 
-class ViewController: UIViewController, UITableViewDataSource{
-
-    @IBOutlet weak var tableView: UITableView!
+class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
-    let tableViewData = Array(repeating: "Item", count: 5)
-
+    var array = Array<String>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-           
-           tableView.register(UITableViewCell.self,
-                              forCellReuseIdentifier: "TableViewCell")
-        tableView.dataSource = self
+        array.append("This")
+        array.append("That")
+        array.append("Wow")
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return array.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        var cell = tableView.dequeueReusableCell(withIdentifier: "cell")
+        if cell == nil{
+            cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
+        }
+        
+        cell?.textLabel?.text = array[indexPath.row]
+        
+        return cell!
+        
+        
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        performSegue(withIdentifier: "makingtransition", sender: array[indexPath.row])
+    }
 
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let svc = segue.destination as! SecondViewController
+        svc.str =  sender as! String
     }
-    
-    @objc func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.tableViewData.count
-    }
-    
-    @objc(tableView:cellForRowAtIndexPath:) func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell",
-                                                 for: indexPath)
-        cell.textLabel?.text = self.tableViewData[indexPath.row]
-        return cell
-    }
-    
-    
+
+
 }
 
